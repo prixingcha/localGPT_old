@@ -4,7 +4,7 @@ import shutil
 import subprocess
 
 import torch
-from auto_gptq import AutoGPTQForCausalLM
+# from auto_gptq import AutoGPTQForCausalLMc
 from flask import Flask, jsonify, request
 from langchain.chains import RetrievalQA
 from langchain.embeddings import HuggingFaceInstructEmbeddings
@@ -28,6 +28,7 @@ from werkzeug.utils import secure_filename
 from constants import CHROMA_SETTINGS, EMBEDDING_MODEL_NAME, PERSIST_DIRECTORY
 
 DEVICE_TYPE = "cuda" if torch.cuda.is_available() else "cpu"
+print(f"DEVICE_TYPE ==> {DEVICE_TYPE}")
 SHOW_SOURCES = True
 logging.info(f"Running on: {DEVICE_TYPE}")
 logging.info(f"Display Source Documents set to: {SHOW_SOURCES}")
@@ -67,10 +68,12 @@ RETRIEVER = DB.as_retriever()
 # for HF models
 # model_id = "TheBloke/vicuna-7B-1.1-HF"
 # model_id = "TheBloke/Wizard-Vicuna-7B-Uncensored-HF"
-# model_id = "TheBloke/guanaco-7B-HF"
+
+#psingh this is for enabling UI Aug-5-2023
+model_id = "TheBloke/guanaco-7B-HF"
 # model_id = 'NousResearch/Nous-Hermes-13b' # Requires ~ 23GB VRAM.
 # Using STransformers alongside will 100% create OOM on 24GB cards.
-# LLM = load_model(device_type=DEVICE_TYPE, model_id=model_id)
+LLM = load_model(device_type=DEVICE_TYPE, model_id=model_id)
 
 # for GPTQ (quantized) models
 # model_id = "TheBloke/Nous-Hermes-13B-GPTQ"
