@@ -142,7 +142,7 @@ def main(device_type):
 
     # embeddings = HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL_NAME)
     
-    
+      
 
     db = Chroma.from_documents(
         texts,
@@ -152,25 +152,90 @@ def main(device_type):
     )
     
     
-    print('db type is:"]' , type(db))
-    single_doc = db.get(ids='c64e01f8-3788-11ee-a0d4-4e33ee01a303')
-    # print(singleDocumenbt)
-    print(type(single_doc))
+    res = db.get(where={"source": "some_other_source"})
+    print(res)
     
     exit()
     
+    # print('db type is:"]' , type(db))
+    # single_doc = db.get(ids='c64e01f8-3788-11ee-a0d4-4e33ee01a303')
+    # # print(singleDocumenbt)
+    # print(type(single_doc))
+    
+    count = 0
+    for item in db.get().items():
+        if count == 0:
+            ids = list(item)[1]
+            # print(ids)
+        elif count == 2:
+            # print(list(item)[1][1])
+            documents = list(item)[1]
+        elif count == 3:
+            # print(list(item)[1][1])
+            metadatas = list(item)[1]
+            
+        count =  count + 1
+    
+    
+    zipped = zip(ids, documents, metadatas)
+    for content in zipped:
+        doc_new1 = Document
+        doc_new1.metadata = {"ID": content[0] }
+        doc_new1.page_content = content[1]
+
+        db.update_document(document_id=content[0], document=doc_new1)
+        # print(db.get(ids= content[0]))
     
     # count = 0
     # for item in db.get().items():
-    #     if count == 0:
-    #         ids = list(item)[1]
-    #         print(list(item)[1][1])
-    #     elif count == 2:
-    #         print(list(item)[1][1])
-    #         documents = list(item)[1]
-    #     elif count == 3:
-    #         print(list(item)[1][1])
+    #     if count == 3:
+    #         # print(list(item)[1][1])
     #         metadatas = list(item)[1]
+    #         print(metadatas)
+    #     count =  count + 1
+        
+    
+        
+    count = 0
+    for item in db.get().items():
+        if count == 0:
+            ids = list(item)[1][1]
+            print(ids)
+            # print(ids)
+        elif count == 2:
+            # print(list(item)[1][1])
+            documents = list(item)[1][1]
+            print(documents)
+        elif count == 3:
+            # print(list(item)[1][1])
+            metadatas = list(item)[1][1]
+            print(metadatas)
+            
+        count =  count + 1
+    
+    db.persist()
+    exit()
+    
+    print(db.get().items())
+    db = None
+    
+    # exit()
+    
+    
+    
+    count = 0
+    for item in db.get().items():
+        if count == 0:
+            ids = list(item)[1]
+            print(list(item)[1][1])
+        elif count == 2:
+            print(list(item)[1][1])
+            documents = list(item)[1]
+        elif count == 3:
+            print(list(item)[1][1])
+            metadatas = list(item)[1]
+            
+    exit()
             
             
     #     count = count + 1
@@ -180,14 +245,14 @@ def main(device_type):
         doc_new1 = Document
         doc_new1.metadata = {"ID": content[0] }
         doc_new1.page_content = content[1]
-
         db.update_document(document_id=content[0], document=doc_new1)
         # print(db.get(ids= content[0]))
+    db.persist()
         
     # exit()
-        
-    db.persist()
     db = None
+        
+    
 
 
     def update_info_with_id(db3):
