@@ -141,6 +141,8 @@ def main(device_type):
     # run_localGPT.py file.
 
     # embeddings = HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL_NAME)
+    
+    
 
     db = Chroma.from_documents(
         texts,
@@ -148,9 +150,56 @@ def main(device_type):
         persist_directory=PERSIST_DIRECTORY,
         client_settings=CHROMA_SETTINGS,
     )
+    
+    
+    print('db type is:"]' , type(db))
+    single_doc = db.get(ids='c64e01f8-3788-11ee-a0d4-4e33ee01a303')
+    # print(singleDocumenbt)
+    print(type(single_doc))
+    
+    exit()
+    
+    
+    # count = 0
+    # for item in db.get().items():
+    #     if count == 0:
+    #         ids = list(item)[1]
+    #         print(list(item)[1][1])
+    #     elif count == 2:
+    #         print(list(item)[1][1])
+    #         documents = list(item)[1]
+    #     elif count == 3:
+    #         print(list(item)[1][1])
+    #         metadatas = list(item)[1]
+            
+            
+    #     count = count + 1
+        
+    zipped = zip(ids, documents, metadatas)
+    for content in zipped:
+        doc_new1 = Document
+        doc_new1.metadata = {"ID": content[0] }
+        doc_new1.page_content = content[1]
+
+        db.update_document(document_id=content[0], document=doc_new1)
+        # print(db.get(ids= content[0]))
+        
+    # exit()
+        
     db.persist()
     db = None
 
+
+    def update_info_with_id(db3):
+        for content in zipped:
+            doc_new1 = Document
+            doc_new1.metadata = {"ID": content[0] }
+            doc_new1.page_content = content[1]
+
+            db3.update_document(document_id=content[0], document=doc_new1)
+            print(db3.get(ids= content[0]))
+            
+        
 
 if __name__ == "__main__":
     logging.basicConfig(
